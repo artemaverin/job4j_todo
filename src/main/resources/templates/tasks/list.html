@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+
+    <!--  Зависимости Bootstrap-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <script th:src="@{/js/code.jquery.com_jquery-3.7.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+
+    <title>Список Задач</title>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <header th:insert="blocks/header :: header"></header>
+    <div class="container">
+        <form class="mt-3" th:action="@{/tasks}" method="get">
+            <select class="form-select form-select-lg mb-3" name="status">
+                <option th:value="1" name="status">Все</option>
+                <option th:value="2" name="status">Выполненные</option>
+                <option th:value="3" name="status">Новые</option>
+            </select>
+            <input type="submit" value="Выбрать">
+        </form>
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Краткое описание</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task: ${tasks}">
+                    <td th:text="${task.id}"/>
+                    <td><a th:text="${task.title}" th:href="@{/tasks/{taskId}(taskId=${task.id})}"></a></td>
+                    <td th:text="${task.created}"/>
+                    <td th:text="${task.done}"/>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <form class="mt-3" th:action="@{/tasks}" method="post">
+            <div class="mb-3">
+                <label for="title" class="form-label"><b>Краткий заголовок</b></label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Запланировать встречу">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label"><b>Описание</b></label>
+                <textarea class="form-control" id="description" name="description" rows="2"
+                          placeholder="Запланировать встречу на 14-00 с коллегами"></textarea>
+            </div>
+            <div class="mb-3 row">
+                <div class="col-6"></div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100" type="submit">Добавить задание</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
