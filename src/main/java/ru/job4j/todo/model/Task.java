@@ -15,7 +15,6 @@ import java.time.temporal.ChronoUnit;
 @Table(name = "tasks")
 public class Task {
     @EqualsAndHashCode.Include
-    @NonNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -24,5 +23,5 @@ public class Task {
     @NonNull
     private String description;
     private LocalDateTime created = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-    private boolean done = false;
+    private boolean done;
 }

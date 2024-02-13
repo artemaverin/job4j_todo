@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.repository.TaskRepository;
+import ru.job4j.todo.status.Status;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -29,6 +30,11 @@ public class StoreService implements TaskService {
     }
 
     @Override
+    public boolean complete(Task task) {
+        return taskRepository.complete(task);
+    }
+
+    @Override
     public Optional<Task> findById(int id) {
         return taskRepository.findById(id);
     }
@@ -39,7 +45,7 @@ public class StoreService implements TaskService {
     }
 
     @Override
-    public Collection<Task> findByStatus(boolean status) {
+    public Collection<Task> findByStatus(Status status) {
         return taskRepository.findByStatus(status);
     }
 }

@@ -25,19 +25,21 @@
 Имя пользователя/Выйти. Если пользователь вошел в систему.
 
 ### Используемые технологии:
-- Spring Boot
-- Thymeleaf
-- Bootstrap
-- Liquibase
-- Hibernate
-- PostgreSQL
-- Maven
+- Spring Boot 2.7.3
+- Thymeleaf 2.7.3
+- Bootstrap 4.1.3
+- Liquibase 4.15.0
+- Hibernate 5.6.11
+- PostgreSQL 15
+- Maven 3.9.5
+- Lombok 1.18.22
+- H2 2.1.214
 
 ### Требования к окружению:
-- ОС: Windows, Mac OS
+- ОС: Windows, Mac OS, Linux
 - Браузр: Opera, Yandex, Edge, Safari
 - Java 17
-- PostgreSQL
+- PostgreSQL 15
 
 ### Запуск приложения:
 

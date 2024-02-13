@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.status.Status;
 
 import java.util.*;
 
@@ -56,15 +57,35 @@ public class TaskStore implements TaskRepository {
             var text = """
                     UPDATE Task SET
                     title = :fTitle,
-                    description = :fDescription,
-                    created = :fCreated,
-                    done = :fDone
+                    description = :fDescription
                     WHERE id = :fId
                     """;
             result = session.createQuery(text)
                     .setParameter("fTitle", task.getTitle())
                     .setParameter("fDescription", task.getDescription())
-                    .setParameter("fCreated", task.getCreated())
+                    .setParameter("fId", task.getId())
+                    .executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return result > 0;
+    }
+
+    @Override
+    public boolean complete(Task task) {
+        var session = sf.openSession();
+        int result = 0;
+        try {
+            session.beginTransaction();
+            var text = """
+                    UPDATE Task SET
+                    done = :fDone 
+                    WHERE id = :fId
+                    """;
+            result = session.createQuery(text)
                     .setParameter("fDone", task.isDone())
                     .setParameter("fId", task.getId())
                     .executeUpdate();
@@ -114,14 +135,19 @@ public class TaskStore implements TaskRepository {
     }
 
     @Override
-    public Collection<Task> findByStatus(boolean status) {
+    public Collection<Task> findByStatus(Status status) {
         var session = sf.openSession();
         List<Task> usersList = new ArrayList<>();
         try {
             session.beginTransaction();
             Query<Task> query = session.createQuery(
                     "from Task as i where i.done = :fStatus", Task.class);
-            query.setParameter("fStatus", status);
+            if (status == Status.COMPLETED) {
+                query.setParameter("fStatus", true);
+            }
+            if (status == Status.NEW) {
+                query.setParameter("fStatus", false);
+            }
             usersList = query.getResultList();
             session.getTransaction().commit();
         } catch (Exception e) {

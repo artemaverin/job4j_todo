@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.service.TaskService;
+import ru.job4j.todo.status.Status;
 
 @Controller
 @AllArgsConstructor
@@ -14,17 +15,21 @@ public class TaskController {
     private TaskService taskService;
 
     @GetMapping
-    public String getAll(Model model, @RequestParam(name = "status", defaultValue = "1") int id) {
-        if (id == 2) {
-            model.addAttribute("tasks", taskService.findByStatus(true));
-            return "tasks/list";
-        }
-        if (id == 3) {
-            model.addAttribute("tasks", taskService.findByStatus(false));
-            return "tasks/list";
-        }
+    public String getAll(Model model) {
         model.addAttribute("class_active", "task");
         model.addAttribute("tasks", taskService.findAll());
+        return "tasks/list";
+    }
+
+    @GetMapping("/complete")
+    public String getComplete(Model model) {
+        model.addAttribute("tasks", taskService.findByStatus(Status.COMPLETED));
+        return "tasks/list";
+    }
+
+    @GetMapping("/new")
+    public String getNew(Model model) {
+        model.addAttribute("tasks", taskService.findByStatus(Status.NEW));
         return "tasks/list";
     }
 
@@ -35,13 +40,12 @@ public class TaskController {
 
     @PostMapping
     public String create(@ModelAttribute Task task, Model model) {
-        try {
-            taskService.save(task);
-            return "redirect:/tasks";
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
+        if (task == null) {
+            model.addAttribute("error", "Ошибка");
             return "errors/404";
         }
+        taskService.save(task);
+        return "redirect:/tasks";
     }
 
     @GetMapping("/{id}")
@@ -66,12 +70,11 @@ public class TaskController {
         return "tasks/update";
     }
 
-
     @PostMapping("/update")
     public String update(@ModelAttribute Task task, Model model) {
         var isUpdated = taskService.update(task);
         if (!isUpdated) {
-            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            model.addAttribute("error", "Задача с указанным идентификатором не найдена");
             return "errors/404";
         }
         return "redirect:/tasks";
@@ -87,7 +90,7 @@ public class TaskController {
         var task = taskOptional.get();
         if (!task.isDone()) {
             task.setDone(true);
-            taskService.update(task);
+            taskService.complete(task);
         }
         model.addAttribute("task", task);
         return "tasks/one";
