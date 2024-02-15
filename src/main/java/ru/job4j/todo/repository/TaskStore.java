@@ -143,10 +143,10 @@ public class TaskStore implements TaskRepository {
             Query<Task> query = session.createQuery(
                     "from Task as i where i.done = :fStatus", Task.class);
             if (status == Status.COMPLETED) {
-                query.setParameter("fStatus", true);
+                query.setParameter("fStatus", status.getStatus());
             }
             if (status == Status.NEW) {
-                query.setParameter("fStatus", false);
+                query.setParameter("fStatus", status.getStatus());
             }
             usersList = query.getResultList();
             session.getTransaction().commit();
