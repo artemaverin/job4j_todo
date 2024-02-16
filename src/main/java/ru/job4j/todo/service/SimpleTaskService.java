@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Optional;
 @Service
 @AllArgsConstructor
-public class StoreService implements TaskService {
+public class SimpleTaskService implements TaskService {
 
     private TaskRepository taskRepository;
 

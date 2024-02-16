@@ -101,13 +101,13 @@ public class TaskStore implements TaskRepository {
     @Override
     public Optional<Task> findById(int id) {
         var session = sf.openSession();
-        Optional<Task> userOptional = Optional.empty();
+        Optional<Task> taskOptional = Optional.empty();
         try {
             session.beginTransaction();
             Query<Task> query = session.createQuery(
                     "from Task as i where i.id = :fId", Task.class);
             query.setParameter("fId", id);
-            userOptional = query.uniqueResultOptional();
+            taskOptional = query.uniqueResultOptional();
 
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -115,29 +115,29 @@ public class TaskStore implements TaskRepository {
         } finally {
             session.close();
         }
-        return userOptional;
+        return taskOptional;
     }
 
     @Override
     public Collection<Task> findAll() {
         var session = sf.openSession();
-        List<Task> usersList = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
         try {
             session.beginTransaction();
-            usersList = session.createQuery("from Task order by id", Task.class).getResultList();
+            taskList = session.createQuery("from Task order by id", Task.class).getResultList();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
         }
-        return usersList;
+        return taskList;
     }
 
     @Override
     public Collection<Task> findByStatus(Status status) {
         var session = sf.openSession();
-        List<Task> usersList = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
         try {
             session.beginTransaction();
             Query<Task> query = session.createQuery(
@@ -148,14 +148,14 @@ public class TaskStore implements TaskRepository {
             if (status == Status.NEW) {
                 query.setParameter("fStatus", status.getStatus());
             }
-            usersList = query.getResultList();
+            taskList = query.getResultList();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
         }
-        return usersList;
+        return taskList;
     }
 
 }
