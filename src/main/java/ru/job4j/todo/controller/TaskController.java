@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
 import ru.job4j.todo.status.Status;
 
@@ -39,11 +40,12 @@ public class TaskController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute Task task, Model model) {
+    public String create(@ModelAttribute Task task, Model model, @SessionAttribute User user) {
         if (task == null) {
             model.addAttribute("error", "Ошибка");
             return "errors/404";
         }
+        task.setUser(user);
         taskService.save(task);
         return "redirect:/tasks";
     }

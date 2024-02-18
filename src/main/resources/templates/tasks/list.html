@@ -32,6 +32,7 @@
                 <th scope="col">Краткое описание</th>
                 <th scope="col">Дата</th>
                 <th scope="col">Статус</th>
+                <th scope="col">Пользователь</th>
             </tr>
             </thead>
             <tbody>
@@ -40,6 +41,7 @@
                 <td><a th:text="${task.title}" th:href="@{/tasks/{taskId}(taskId=${task.id})}"></a></td>
                 <td th:text="${task.created}"/>
                 <td th:text="${task.done}"/>
+                <td th:text="${task.user.name}"/>
             </tr>
             </tbody>
         </table>
