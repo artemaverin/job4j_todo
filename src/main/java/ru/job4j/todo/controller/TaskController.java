@@ -48,6 +48,7 @@ public class TaskController {
         task.setUser(user);
         taskService.save(task);
         return "redirect:/tasks";
+
     }
 
     @GetMapping("/{id}")
