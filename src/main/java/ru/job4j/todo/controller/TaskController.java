@@ -41,12 +41,12 @@ public class TaskController {
 
     @PostMapping
     public String create(@ModelAttribute Task task, Model model, @SessionAttribute User user) {
-        if (task == null) {
+        task.setUser(user);
+        var optionalTask = taskService.save(task);
+        if (optionalTask.isEmpty()) {
             model.addAttribute("error", "Ошибка");
             return "errors/404";
         }
-        task.setUser(user);
-        taskService.save(task);
         return "redirect:/tasks";
 
     }

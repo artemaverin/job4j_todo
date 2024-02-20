@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface TaskService {
-    Task save(Task task);
+    Optional<Task> save(Task task);
 
     boolean deleteById(int id);
 

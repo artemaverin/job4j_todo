@@ -14,9 +14,14 @@ public class TaskStore implements TaskRepository {
     private CrudRepository crudRepository;
 
     @Override
-    public Task save(Task task) {
-        crudRepository.run(session -> session.persist(task));
-        return task;
+    public Optional<Task> save(Task task) {
+        try {
+            crudRepository.run(session -> session.persist(task));
+            return Optional.of(task);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 
     @Override
