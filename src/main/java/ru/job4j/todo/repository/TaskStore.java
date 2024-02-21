@@ -34,10 +34,16 @@ public class TaskStore implements TaskRepository {
         return crudRepository.booleanRun("""
                     UPDATE Task SET
                     title = :fTitle,
-                    description = :fDescription
+                    description = :fDescription,
+                    priority_id = :fPriorityId
                     WHERE id = :fId
                     """,
-                Map.of("fTitle", task.getTitle(), "fDescription", task.getDescription(), "fId", task.getId()));
+                Map.of(
+                        "fTitle", task.getTitle(),
+                        "fDescription", task.getDescription(),
+                        "fPriorityId", task.getPriority().getId(),
+                        "fId", task.getId())
+        );
     }
 
     @Override
@@ -52,18 +58,18 @@ public class TaskStore implements TaskRepository {
 
     @Override
     public Optional<Task> findById(int id) {
-        return crudRepository.optional("from Task as i where i.id = :fId", Task.class,
+        return crudRepository.optional("FROM Task f JOIN FETCH f.priority where f.id = :fId", Task.class,
                 Map.of("fId", id));
     }
 
     @Override
     public Collection<Task> findAll() {
-        return crudRepository.query("from Task order by id", Task.class);
+        return crudRepository.query("from Task f JOIN FETCH f.priority", Task.class);
     }
 
     @Override
     public Collection<Task> findByStatus(Status status) {
-        return crudRepository.query("from Task as i where i.done = :fStatus",
+        return crudRepository.query("from Task t JOIN FETCH f.priority where t.done = :fStatus",
                 Task.class, Map.of("fStatus", status.getStatus()));
     }
 

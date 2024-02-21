@@ -25,6 +25,7 @@
                         <th scope="col">Полное описание</th>
                         <th scope="col">Дата</th>
                         <th scope="col">Статус</th>
+                        <th scope="col">Приоритет</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -33,6 +34,7 @@
                     <td th:text="${task.description}"/>
                     <td th:text="${task.created}"/>
                     <td th:text="${task.done}"/>
+                    <td th:text="${task.priority.name}"/>
                     </tbody>
                 </table>
             </div>
