@@ -32,10 +32,16 @@
             <div class="mb-3">
                 <label for="priority"><b>Приоритет</b></label>
                 <select class="form-control" id="priority" name="priority.id">
-                    <option th:each="priority : ${priorities}" th:value="${priority.id}" th:text="${priority.name}" th:field="*{priority.id}"></option>
+                    <option th:each="priority : ${priorities}" th:value="${priority.id}" th:text="${priority.name}"
+                            th:field="*{priority.id}"></option>
                 </select>
             </div>
-
+            <div class="mb-3">
+                <label for="categories"><b>Категория</b></label> <br/>
+                <select class="form-control" id="categories" name="categoriesId" multiple>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">
+                </select>
+            </div>
             <div class="mb-3 row">
                 <div class="col-6"></div>
                 <div class="col-6">

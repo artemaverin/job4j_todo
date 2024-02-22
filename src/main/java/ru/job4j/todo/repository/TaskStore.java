@@ -31,19 +31,13 @@ public class TaskStore implements TaskRepository {
 
     @Override
     public boolean update(Task task) {
-        return crudRepository.booleanRun("""
-                    UPDATE Task SET
-                    title = :fTitle,
-                    description = :fDescription,
-                    priority_id = :fPriorityId
-                    WHERE id = :fId
-                    """,
-                Map.of(
-                        "fTitle", task.getTitle(),
-                        "fDescription", task.getDescription(),
-                        "fPriorityId", task.getPriority().getId(),
-                        "fId", task.getId())
-        );
+        try {
+            crudRepository.run(session -> session.update(task));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -58,18 +52,23 @@ public class TaskStore implements TaskRepository {
 
     @Override
     public Optional<Task> findById(int id) {
-        return crudRepository.optional("FROM Task f JOIN FETCH f.priority where f.id = :fId", Task.class,
+        return crudRepository.optional(
+                "FROM Task f JOIN FETCH f.priority JOIN FETCH f.categories where f.id = :fId",
+                Task.class,
                 Map.of("fId", id));
     }
 
     @Override
     public Collection<Task> findAll() {
-        return crudRepository.query("from Task f JOIN FETCH f.priority", Task.class);
+        return crudRepository.query(
+                "SELECT DISTINCT f from Task f JOIN FETCH f.priority JOIN FETCH f.categories order by f.id",
+                Task.class);
     }
 
     @Override
     public Collection<Task> findByStatus(Status status) {
-        return crudRepository.query("from Task t JOIN FETCH f.priority where t.done = :fStatus",
+        return crudRepository.query(
+                "from Task t JOIN FETCH f.priority JOIN FETCH f.categories where f.done = :fStatus",
                 Task.class, Map.of("fStatus", status.getStatus()));
     }
 

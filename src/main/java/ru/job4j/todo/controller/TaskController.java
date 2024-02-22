@@ -6,9 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 import ru.job4j.todo.status.Status;
+
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -16,12 +19,14 @@ import ru.job4j.todo.status.Status;
 public class TaskController {
     private TaskService taskService;
     private PriorityService priorityService;
+    private CategoryService categoryService;
 
     @GetMapping
     public String getAll(Model model) {
         model.addAttribute("class_active", "task");
         model.addAttribute("tasks", taskService.findAll());
         model.addAttribute("priorities", priorityService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "tasks/list";
     }
 
@@ -43,8 +48,11 @@ public class TaskController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute Task task, Model model, @SessionAttribute User user) {
+    public String create(@ModelAttribute Task task, Model model, @SessionAttribute User user,
+                         @RequestParam List<Integer> categoriesId) {
         task.setUser(user);
+        var categoryList = categoryService.convert(categoriesId);
+        task.setCategories(categoryList);
         var optionalTask = taskService.save(task);
         if (optionalTask.isEmpty()) {
             model.addAttribute("error", "Ошибка");
@@ -74,11 +82,16 @@ public class TaskController {
         }
         model.addAttribute("task", taskOptional.get());
         model.addAttribute("priorities", priorityService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "tasks/update";
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Task task, Model model) {
+    public String update(@ModelAttribute Task task, Model model, @RequestParam List<Integer> categoriesId,
+                         @SessionAttribute User user) {
+        task.setUser(user);
+        var categoryList = categoryService.convert(categoriesId);
+        task.setCategories(categoryList);
         var isUpdated = taskService.update(task);
         if (!isUpdated) {
             model.addAttribute("error", "Задача с указанным идентификатором не найдена");
