@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CategoryService {
     Collection<Category> findAll();
-    List<Category> convert(List<Integer> idList);
+    List<Category> findByIds(List<Integer> integerList);
 }

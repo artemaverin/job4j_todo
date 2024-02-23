@@ -20,16 +20,8 @@ public class SimpleCategoryService implements CategoryService {
         return categoryRepository.findAll();
     }
 
-    public List<Category> convert(List<Integer> idList) {
-        List<Category> newCategories = new ArrayList<>();
-        var categories = categoryRepository.findAll();
-        for (Integer id:idList) {
-            for (Category category:categories) {
-                if (category.getId() == id) {
-                    newCategories.add(category);
-                }
-            }
-        }
-        return newCategories;
+    @Override
+    public List<Category> findByIds(List<Integer> integerList) {
+        return categoryRepository.findByIds(integerList);
     }
 }

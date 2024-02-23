@@ -51,7 +51,7 @@ public class TaskController {
     public String create(@ModelAttribute Task task, Model model, @SessionAttribute User user,
                          @RequestParam List<Integer> categoriesId) {
         task.setUser(user);
-        var categoryList = categoryService.convert(categoriesId);
+        var categoryList = categoryService.findByIds(categoriesId);
         task.setCategories(categoryList);
         var optionalTask = taskService.save(task);
         if (optionalTask.isEmpty()) {
@@ -90,7 +90,7 @@ public class TaskController {
     public String update(@ModelAttribute Task task, Model model, @RequestParam List<Integer> categoriesId,
                          @SessionAttribute User user) {
         task.setUser(user);
-        var categoryList = categoryService.convert(categoriesId);
+        var categoryList = categoryService.findByIds(categoriesId);
         task.setCategories(categoryList);
         var isUpdated = taskService.update(task);
         if (!isUpdated) {
